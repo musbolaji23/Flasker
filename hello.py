@@ -21,11 +21,38 @@ class Users(db.Model):
 
     def __repr__(self):
         return '<Name %r>' % self.name
+    
+# Initialize database and create all tables if they don't exist
+with app.app_context():
+    db.create_all()
 
+class UserForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired()])
+    submit = SubmitField('submit')
 
 class NamerForm(FlaskForm):
     name = StringField('Whats Your Name', validators=[DataRequired()])
     submit = SubmitField('submit')
+
+
+@app.route('/user/add', methods=['GET', 'POST'])
+def add_user():
+    name = None
+    form = UserForm()
+    if form.validate_on_submit():
+        user = Users.query.filter_by(email=form.email.data).first()
+        if user is None:
+            user = Users(name=form.name.data, email=form.email.data)
+            db.session.add(user)
+            db.session.commit()
+        name = form.name.data
+        form.name.data = ''
+        form.email.data = ''
+        flash("User Added Successfully!")
+
+    our_users = Users.query.order_by(Users.date_added)
+    return render_template("add_user.html", form=form, name=name, our_users=our_users)
 
 @app.route('/')
 def index():
