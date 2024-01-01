@@ -8,7 +8,14 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# OldSQLite database
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+#New SQl database
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://username:password@localhost/db_name'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:odothay23@localhost/our_users'
+
+
 app.config['SECRET_KEY'] = 'not to be disclosed'
 
 db = SQLAlchemy(app)
